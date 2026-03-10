@@ -26,6 +26,7 @@ class MessageService
                     ->where('sender_id', $user->id)
                     ->whereNull('read_at')
                     ->count();
+
                 return $user;
             });
     }
