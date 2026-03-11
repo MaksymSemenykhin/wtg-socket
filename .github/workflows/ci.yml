@@ -46,6 +46,8 @@ jobs:
           restore-keys: ${{ runner.os }}-composer-
 
       - name: Install dependencies
+        env:
+          BROADCAST_CONNECTION: log
         run: composer install --no-progress --prefer-dist --optimize-autoloader
 
       - name: Prepare .env
