@@ -12,7 +12,6 @@ class EmailVerificationTest extends TestCase
     use RefreshDatabase;
 
     /** Email verification is disabled; verify-email routes redirect to dashboard. */
-
     public function test_verify_email_screen_redirects_to_dashboard(): void
     {
         $user = User::factory()->create();
