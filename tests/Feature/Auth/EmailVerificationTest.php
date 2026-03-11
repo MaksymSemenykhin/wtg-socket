@@ -3,9 +3,7 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
 use Tests\TestCase;
 
@@ -13,20 +11,20 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_email_verification_screen_can_be_rendered(): void
+    /** Email verification is disabled; verify-email routes redirect to dashboard. */
+
+    public function test_verify_email_screen_redirects_to_dashboard(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/verify-email');
 
-        $response->assertStatus(200);
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 
-    public function test_email_can_be_verified(): void
+    public function test_verify_email_link_redirects_to_dashboard(): void
     {
-        $user = User::factory()->unverified()->create();
-
-        Event::fake();
+        $user = User::factory()->create();
 
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
@@ -36,14 +34,12 @@ class EmailVerificationTest extends TestCase
 
         $response = $this->actingAs($user)->get($verificationUrl);
 
-        Event::assertDispatched(Verified::class);
-        $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(route('dashboard', absolute: false).'?verified=1');
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 
-    public function test_email_is_not_verified_with_invalid_hash(): void
+    public function test_verify_email_with_invalid_hash_redirects_to_dashboard(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = User::factory()->create();
 
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
@@ -51,8 +47,8 @@ class EmailVerificationTest extends TestCase
             ['id' => $user->id, 'hash' => sha1('wrong-email')]
         );
 
-        $this->actingAs($user)->get($verificationUrl);
+        $response = $this->actingAs($user)->get($verificationUrl);
 
-        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+        $response->assertRedirect(route('dashboard', absolute: false));
     }
 }
