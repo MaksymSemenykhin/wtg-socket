@@ -8,7 +8,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [MessageController::class, 'index'])->name('dashboard');
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::get('/messages/{user}', [MessageController::class, 'messages'])->name('messages.history');

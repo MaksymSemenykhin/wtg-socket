@@ -61,6 +61,7 @@ Environment (see `.env.example`): `BROADCAST_CONNECTION=reverb`, `QUEUE_CONNECTI
 
    ```bash
    ./vendor/bin/sail artisan migrate
+   ./vendor/bin/sail artisan key:generate
    ```
 
 6. **Build frontend assets**:
@@ -90,53 +91,6 @@ For local development with hot reload:
 ```bash
 ./vendor/bin/sail npm run dev
 ```
-
-## Code quality and tests
-
-Run these commands **in WSL** via Sail (the app uses MySQL and Redis, so tests need the Sail environment).
-
-- **Laravel Pint** (code style):
-
-  ```bash
-  ./vendor/bin/sail exec laravel.test ./vendor/bin/pint
-  ./vendor/bin/sail exec laravel.test ./vendor/bin/pint --test   # CI check
-  ```
-
-- **PHPStan (Larastan)** (static analysis):
-
-  ```bash
-  ./vendor/bin/sail exec laravel.test ./vendor/bin/phpstan analyse
-  ```
-
-- **Tests** (PHPUnit) — run in WSL with Sail so MySQL (`DB_DATABASE=testing`) is available:
-
-  ```bash
-  ./vendor/bin/sail artisan test
-  ```
-
-  Or: `./vendor/bin/sail test` (same as above).
-
-## CI/CD
-
-GitHub Actions runs on push and pull requests to `main` / `master`:
-
-- Install PHP 8.3, MySQL, Redis
-- `composer install`, prepare `.env`, run migrations
-- **Pint** (`pint --test`)
-- **PHPStan**
-- **PHPUnit** (`php artisan test`)
-
-See [.github/workflows/ci.yml](.github/workflows/ci.yml).
-
-## Commit convention
-
-This project uses [Conventional Commits](https://www.conventionalcommits.org/):
-
-- `type(scope): short description`
-- Types: `feat`, `fix`, `docs`, `style`, `refactor`, `test`, `chore`
-- Scope examples: `auth`, `messages`, `broadcasting`, `ci`
-
-Example: `feat(messages): add message store and broadcast event`
 
 ## License
 

@@ -19,6 +19,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Force Reverb as broadcaster (avoids Pusher when config is cached or env is wrong)
+        config(['broadcasting.default' => 'reverb']);
     }
 }
